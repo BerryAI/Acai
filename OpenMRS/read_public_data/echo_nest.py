@@ -9,6 +9,7 @@
 import io
 import operator
 
+
 def get_echo_nest_user_history(filename, song_index):
     """Read full listening history of Echo Nest Data
 
@@ -19,7 +20,7 @@ def get_echo_nest_user_history(filename, song_index):
     """
 
     echo_nest_user_history = dict()
-    with io.open(filename,'r') as fp:
+    with io.open(filename, 'r') as fp:
         for line in fp:
             contents = line.rstrip('\n').split("\t")
             if contents[1] not in song_index:
@@ -32,6 +33,7 @@ def get_echo_nest_user_history(filename, song_index):
                                     song_index[contents[1]], contents[2]))
 
     return echo_nest_user_history
+
 
 def get_user_rating_from_history_echo_nest(echo_nest_user_history):
 
@@ -62,6 +64,7 @@ def get_user_rating_from_history_echo_nest(echo_nest_user_history):
 
     return user_rating_dict
 
+
 def get_top_user_rating_from_history_echo_nest(echo_nest_user_history, num):
 
     """Calculating rates from users' listening history of echo nest
@@ -79,8 +82,8 @@ def get_top_user_rating_from_history_echo_nest(echo_nest_user_history, num):
     for user in user_rating_dict:
         user_rating_length[user] = len(user_rating_dict[user])
 
-    sorted_user_rating_length = sorted(user_rating_length.items(),
-                            key=operator.itemgetter(1), reverse=True)
+    sorted_user_rating_length = sorted(
+        user_rating_length.items(), key=operator.itemgetter(1), reverse=True)
 
     top_user_rating_dict = dict()
     for value in sorted_user_rating_length[0:num]:

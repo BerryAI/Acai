@@ -10,6 +10,7 @@
 
 import numpy
 
+
 def full_rating_matrix_with_index(user_rate_dict):
     """Get full rating matrix with song index at each row
 
@@ -37,14 +38,15 @@ def full_rating_matrix_with_index(user_rate_dict):
     for user in user_rate_dict:
         rating_vector = [0.0] * len(song_index)
         for track_key in user_rate_dict[user]:
-            rating_vector[song_index[track_key]
-                ] = user_rate_dict[user][track_key]
+            rating_vector[song_index[track_key]] = user_rate_dict[user][
+                track_key]
         rating_matrix[user_index[user]] = rating_vector
 
     rating_matrix = numpy.array(rating_matrix)
     matrix_update_by_song_mean_rate(rating_matrix)
 
     return user_index, song_index, rating_matrix
+
 
 def matrix_update_by_song_mean_rate(rating_matrix):
     """Update rating score with average score
@@ -53,12 +55,13 @@ def matrix_update_by_song_mean_rate(rating_matrix):
     """
 
     for i in range(0, len(rating_matrix[0])):
-        index = rating_matrix[:,i] > 0
-        ave_score = float(numpy.sum(rating_matrix[:,i])) / float(
+        index = rating_matrix[:, i] > 0
+        ave_score = float(numpy.sum(rating_matrix[:, i])) / float(
             numpy.sum(index))
         for j in range(0, len(rating_matrix)):
             if rating_matrix[j][i] == 0.0:
                 rating_matrix[j][i] = ave_score
+
 
 def get_hidden_feature_matrix_SVD(user_rate_dict, k):
     """Get hidden feature matrix by SVD method
@@ -75,12 +78,13 @@ def get_hidden_feature_matrix_SVD(user_rate_dict, k):
     U, s, V = numpy.linalg.svd(rating_matrix, full_matrices=True)
 
     V_bar = V[0:k]
-    for i in range(0,k):
-        V_bar[i] = s[i]* V_bar[i]
+    for i in range(0, k):
+        V_bar[i] = s[i] * V_bar[i]
     hidden_feature = V_bar
-    user_weight = U[:,0:k]
+    user_weight = U[:, 0:k]
 
     return user_weight, hidden_feature
+
 
 def update_residue(rating_matrix, rate_bar):
     """update residue matrix for each iteration in Gradient descent method
@@ -96,6 +100,7 @@ def update_residue(rating_matrix, rate_bar):
     residue[index] = 0
 
     return residue
+
 
 def stochastic_GD(rating_matrix, lean_rate, lambda_rate, k, max_iter):
     """Stochastic Gradient Descent method
@@ -113,8 +118,8 @@ def stochastic_GD(rating_matrix, lean_rate, lambda_rate, k, max_iter):
     m = len(rating_matrix)
     n = len(rating_matrix[0])
 
-    user_weight = numpy.random.rand(m,k)
-    hidden_feature = numpy.random.rand(n,k)
+    user_weight = numpy.random.rand(m, k)
+    hidden_feature = numpy.random.rand(n, k)
 
     rate_bar = user_weight.dot(hidden_feature.T)
     residue = update_residue(rating_matrix, rate_bar)
@@ -122,16 +127,16 @@ def stochastic_GD(rating_matrix, lean_rate, lambda_rate, k, max_iter):
     res_norm = numpy.linalg.norm(residue)
     res_norm_list = [res_norm]
 
-    for h in range (0, max_iter):
+    for h in range(0, max_iter):
 
-        user_weight = lean_rate*residue.dot(hidden_feature) + (1
-                    - lean_rate*lambda_rate)*user_weight
+        user_weight = lean_rate*residue.dot(hidden_feature) + (
+            1 - lean_rate*lambda_rate)*user_weight
 
         rate_bar = user_weight.dot(hidden_feature.T)
         residue = update_residue(rating_matrix, rate_bar)
 
-        hidden_feature = lean_rate*residue.T.dot(user_weight) + (1
-                    - lean_rate*lambda_rate)*hidden_feature
+        hidden_feature = lean_rate*residue.T.dot(user_weight) + (
+            1 - lean_rate*lambda_rate)*hidden_feature
 
         rate_bar = user_weight.dot(hidden_feature.T)
         residue = update_residue(rating_matrix, rate_bar)
@@ -143,6 +148,7 @@ def stochastic_GD(rating_matrix, lean_rate, lambda_rate, k, max_iter):
             break
 
     return user_weight, hidden_feature, res_norm_list
+
 
 def stochastic_GD_with_ini(rating_matrix, user_weight, lean_rate,
                            hidden_feature, lambda_rate, max_iter):
@@ -170,16 +176,16 @@ def stochastic_GD_with_ini(rating_matrix, user_weight, lean_rate,
 
     full_iteration = 1
 
-    for h in range (0, max_iter):
+    for h in range(0, max_iter):
 
-        user_weight = lean_rate*residue.dot(hidden_feature) + (1
-                    - lean_rate*lambda_rate)*user_weight
+        user_weight = lean_rate*residue.dot(hidden_feature) + (
+            1 - lean_rate*lambda_rate)*user_weight
 
         rate_bar = user_weight.dot(hidden_feature.T)
         residue = update_residue(rating_matrix, rate_bar)
 
-        hidden_feature = lean_rate*residue.T.dot(user_weight) + (1
-                    - lean_rate*lambda_rate)*hidden_feature
+        hidden_feature = lean_rate*residue.T.dot(user_weight) + (
+            1 - lean_rate*lambda_rate)*hidden_feature
 
         rate_bar = user_weight.dot(hidden_feature.T)
         residue = update_residue(rating_matrix, rate_bar)
@@ -194,7 +200,9 @@ def stochastic_GD_with_ini(rating_matrix, user_weight, lean_rate,
             full_iteration = 2
             break
         res_norm_old = res_norm
-    return user_weight, hidden_feature, res_norm_list, full_success
+
+    return user_weight, hidden_feature, res_norm_list, full_iteration
+
 
 def stochastic_GD_r(rating_matrix, lean_rate, lambda_rate, k,
                     max_iter_inloop, max_iter_outloop):
@@ -209,12 +217,12 @@ def stochastic_GD_r(rating_matrix, lean_rate, lambda_rate, k,
     :rtype: ndarray
     """
 
-    user_weight, hidden_feature, res_norm_list = stochastic_GD(rating_matrix,
-                                    lean_rate, lambda_rate, k, max_iter_inloop)
+    user_weight, hidden_feature, res_norm_list = stochastic_GD(
+        rating_matrix, lean_rate, lambda_rate, k, max_iter_inloop)
 
     full_success = 1
 
-    for i in range(0,max_iter_outloop):
+    for i in range(0, max_iter_outloop):
 
         if full_success == 2:
             break
@@ -223,14 +231,15 @@ def stochastic_GD_r(rating_matrix, lean_rate, lambda_rate, k,
         if full_success == 0:
             lean_rate = lean_rate/2
 
-        (user_weight, hidden_feature, res_norm_list_tmp,
-                    full_success) = stochastic_GD_with_ini(
+        (user_weight, hidden_feature,
+            res_norm_list_tmp, full_success) = stochastic_GD_with_ini(
                     rating_matrix, user_weight, lean_rate,
-                    hidden_feature, lambda_rate, max_iter)
+                    hidden_feature, lambda_rate, max_iter_outloop)
 
         res_norm_list = res_norm_list + res_norm_list_tmp
 
     return user_weight, hidden_feature, res_norm_list
+
 
 def batch_GD(rating_matrix, lean_rate, lambda_rate, k, max_iter):
     """Batch Gradient Descent method
@@ -253,17 +262,17 @@ def batch_GD(rating_matrix, lean_rate, lambda_rate, k, max_iter):
     m = len(rating_matrix)
     n = len(rating_matrix[0])
 
-    user_weight = numpy.random.rand(m,k)
-    hidden_feature = numpy.random.rand(n,k)
+    user_weight = numpy.random.rand(m, k)
+    hidden_feature = numpy.random.rand(n, k)
 
     columns = (residue != 0).sum(0)
-    rows    = (residue != 0).sum(1)
+    rows = (residue != 0).sum(1)
     diag_n = numpy.diag(1 - lean_rate*lambda_rate*columns)
     diag_m = numpy.diag(1 - lean_rate*lambda_rate*rows)
 
-    for h in range (0, max_iter):
+    for h in range(0, max_iter):
         user_weight = diag_m.dot(user_weight)
-        user_weight += lean_rate * numpy.dot(residue,hidden_feature)
+        user_weight += lean_rate * numpy.dot(residue, hidden_feature)
         hidden_feature = diag_n.dot(hidden_feature)
         hidden_feature += lean_rate * residue.T.dot(user_weight)
         rate_bar = user_weight.dot(hidden_feature.T)
@@ -276,8 +285,9 @@ def batch_GD(rating_matrix, lean_rate, lambda_rate, k, max_iter):
 
     return user_weight, hidden_feature
 
-def get_hidden_feature_matrix_GD(user_rate_dict, k, lean_rate,
-                                  lambda_rate, max_iter, GD_method):
+
+def get_hidden_feature_matrix_GD(
+        user_rate_dict, k, lean_rate, lambda_rate, max_iter, GD_method):
     """Get hidden feature matrix by stochastic gradient descent method
 
     :param user_rate_dict: user rating matrix
@@ -294,13 +304,13 @@ def get_hidden_feature_matrix_GD(user_rate_dict, k, lean_rate,
     user_index, song_index, rating_matrix = full_rating_matrix_with_index(
                                             user_rate_dict)
     if GD_method == 1:
-        user_weight, hidden_feature, res_norm = stochastic_GD(rating_matrix,
-                                        lean_rate, lambda_rate, k, max_iter)
+        user_weight, hidden_feature, res_norm = stochastic_GD(
+            rating_matrix, lean_rate, lambda_rate, k, max_iter)
     if GD_method == 2:
-        user_weight, hidden_feature, res_norm = stochastic_GD_r(rating_matrix,
-                                        lean_rate, lambda_rate, k, max_iter)
+        user_weight, hidden_feature, res_norm = stochastic_GD_r(
+            rating_matrix, lean_rate, lambda_rate, k, max_iter)
     if GD_method == 3:
-        user_weight, hidden_feature, res_norm = batch_GD(rating_matrix,
-                                        lean_rate, lambda_rate, k, max_iter)
+        user_weight, hidden_feature, res_norm = batch_GD(
+            rating_matrix, lean_rate, lambda_rate, k, max_iter)
 
     return user_weight, hidden_feature, res_norm

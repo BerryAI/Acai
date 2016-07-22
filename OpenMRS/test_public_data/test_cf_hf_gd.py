@@ -44,7 +44,7 @@ user_weight, hidden_feature, res_norm = ch.get_hidden_feature_matrix_GD(
                 user_rate_dict, k, lean_rate, lambda_rate, max_iter, GD_method)
 
 print "hidden features of 10 songs"
-print hidden_feature[0:10,:]
+print hidden_feature[0:10, :]
 hist, bin_edges = numpy.histogram(hidden_feature, bins=20)
 print hist
 print bin_edges

@@ -5,6 +5,8 @@
 
     :auther: Alexander Z Wang
 """
+import io
+
 
 def read_full_user_log(filename):
     """Read full listening history
@@ -16,7 +18,7 @@ def read_full_user_log(filename):
     song_dictionary = dict()
     user_play_his_dict = dict()
     count = 0
-    with io.open(filename,'r',encoding='utf8') as fp:
+    with io.open(filename, 'r', encoding='utf8') as fp:
         for line in fp:
             contents = line.rstrip('\n').rstrip('\r').split("\t")
             if len(contents) < 6:
@@ -32,6 +34,6 @@ def read_full_user_log(filename):
                 user_play_his_dict[contents[0]] = [song_dictionary[track_info]]
 
     for user in user_play_his_dict:
-         user_play_his_dict[user] = list(set(user_play_his_dict[user]))
+        user_play_his_dict[user] = list(set(user_play_his_dict[user]))
 
     return user_play_his_dict

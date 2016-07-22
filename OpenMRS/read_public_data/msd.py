@@ -7,14 +7,8 @@
 """
 
 import io
-import operator
-import os.path
 import time
-import math
-import sqlite3
-import urllib
-import urllib2
-import json
+
 
 def read_tracks_database(filename):
     """Read all tracks information from Million Song Dataset
@@ -26,7 +20,7 @@ def read_tracks_database(filename):
     unique_tracks_info_dict = dict()
     unique_tracks_info_dict_reverse = dict()
     i = 0
-    with io.open(filename,'r',encoding='utf8') as fp:
+    with io.open(filename, 'r', encoding='utf8') as fp:
         for line in fp:
             contents = line.rstrip('\n').split("<SEP>")
             track_info = contents[2] + "<SEP>" + contents[3]
@@ -37,6 +31,7 @@ def read_tracks_database(filename):
                 unique_tracks_info_dict_reverse[i-1] = track_info
 
     return unique_tracks_info_dict, unique_tracks_info_dict_reverse
+
 
 def get_song_ID_index(filename):
     """Read all tracks information from Million Song Dataset, return
@@ -51,7 +46,7 @@ def get_song_ID_index(filename):
     song_index = dict()
     name_index = dict()
 
-    with io.open(filename,'r') as fp:
+    with io.open(filename, 'r') as fp:
         count = 0
         for line in fp:
             contents = line.rstrip('\n').split("<SEP>")
@@ -65,10 +60,11 @@ def get_song_ID_index(filename):
 
     return song_index, name_index
 
+
 def read_intersect_user_log(filename, unique_tracks_info_dict):
     """Read User Listening Logs intercept MSD
 
-    :param filename: filename of the user listening log contains only MSD tracks
+    :param filename: filename of the user listening log contains only MSD song
     :param unique_tracks_info_dict: MSD tracks information dictionary
     :return user_log_MSD: each user play history of MSD tracks.
     :return user_track_timestamp_MSD: timestamp information of each track
@@ -76,7 +72,7 @@ def read_intersect_user_log(filename, unique_tracks_info_dict):
     """
     user_log_MSD = dict()
     user_track_timestamp_MSD = dict()
-    with io.open(filename,'r',encoding='utf8') as fp:
+    with io.open(filename, 'r', encoding='utf8') as fp:
         for line in fp:
             contents = line.rstrip('\n').rstrip('\r').split("\t")
             if len(contents) < 6:
@@ -94,7 +90,8 @@ def read_intersect_user_log(filename, unique_tracks_info_dict):
                 if (unique_tracks_info_dict[track_info] in
                         user_track_timestamp_MSD[contents[0]]):
                     user_track_timestamp_MSD[contents[0]][
-                        unique_tracks_info_dict[track_info]].append(contents[1])
+                        unique_tracks_info_dict[track_info]].append(
+                            contents[1])
                 else:
                     user_track_timestamp_MSD[contents[0]][
                         unique_tracks_info_dict[track_info]] = [contents[1]]
@@ -109,6 +106,7 @@ def read_intersect_user_log(filename, unique_tracks_info_dict):
         user_log_MSD[user] = list(set(user_log_MSD[user]))
 
     return user_log_MSD, user_track_timestamp_MSD
+
 
 def get_track_rating_from_history(user_track_timestamp_MSD):
     """Calculating rates from users' listening history of MSD
@@ -135,13 +133,13 @@ def get_track_rating_from_history(user_track_timestamp_MSD):
             if length > 1:
                 user_rate_dict[user][key] = 4
 
-                # if a track played more than once in a single day, 5 star rating
+                # if a track played more than once in a single day, 5 star
                 for i in range(0, length-1):
                     diff_time = abs(time.mktime(time.strptime(
-                        user_track_timestamp_MSD[user][key][i], time_format))
-                        - time.mktime(time.strptime(
-                        user_track_timestamp_MSD[user][key][i+1],
-                        time_format))) /3600
+                        user_track_timestamp_MSD[user][key][i], time_format)) -
+                        time.mktime(time.strptime(
+                            user_track_timestamp_MSD[user][key][i+1],
+                            time_format))) / 3600
                     if diff_time < 24:
                         user_rate_dict[user][key] = 5
                         break
@@ -152,10 +150,10 @@ def get_track_rating_from_history(user_track_timestamp_MSD):
                 if length > 4:
                     for i in range(0, length-4):
                         diff_time = abs(time.mktime(time.strptime(
-                        user_track_timestamp_MSD[user][key][i], time_format))
-                         - time.mktime(time.strptime(
-                         user_track_timestamp_MSD[user][key][i+3],
-                         time_format))) /3600/24
+                            user_track_timestamp_MSD[user][key][i],
+                            time_format)) - time.mktime(time.strptime(
+                                user_track_timestamp_MSD[user][key][i+3],
+                                time_format))) / 3600 / 24
                         if diff_time < 30:
                             user_rate_dict[user][key] = 5
                             break

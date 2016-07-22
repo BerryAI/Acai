@@ -25,11 +25,12 @@ def get_knn_dict(full_user_his_dict, k):
         for another_user in full_user_his_dict:
             if user is another_user:
                 continue
-            user_tmp_dict[another_user] = len(set(full_user_his_dict[user]) &
-                                        set(full_user_his_dict[another_user]))
+            user_tmp_dict[another_user] = len(
+                set(full_user_his_dict[user]) &
+                set(full_user_his_dict[another_user]))
 
-        sorted_user_tmp_dict = sorted(user_tmp_dict.items(),
-                                    key=operator.itemgetter(1))
+        sorted_user_tmp_dict = sorted(
+            user_tmp_dict.items(), key=operator.itemgetter(1))
         sorted_user_tmp_dict.reverse()
         boundary = 0
         for keys in sorted_user_tmp_dict:
@@ -41,6 +42,7 @@ def get_knn_dict(full_user_his_dict, k):
         print user_knn_dict[user]
 
     return user_knn_dict
+
 
 def get_mean_vote_dict(user_rate_dict):
     """Calculating mean rates from users' listening history
@@ -60,6 +62,7 @@ def get_mean_vote_dict(user_rate_dict):
 
     return user_mean_votes_dict
 
+
 def write_neighbours(user_knn_dict, filename):
     """Write all neighbours information to disk
 
@@ -70,13 +73,14 @@ def write_neighbours(user_knn_dict, filename):
     for user in user_knn_dict:
         tmp = user + "<SEP>"
         for other_user_value in user_knn_dict[user]:
-            value = other_user_value[0] + ',' +  str(other_user_value[1])
-            tmp  = tmp + value + "<SEP>"
+            value = other_user_value[0] + ',' + str(other_user_value[1])
+            tmp = tmp + value + "<SEP>"
         tmp.rstrip("<SEP>")
         tmp += "\n"
         f.write(tmp)
 
     f.close()
+
 
 def get_knn_write_file(full_user_his, k, similar_weight_user_filename, max_k):
     """Get user's other most k similar neighbours and write to file
@@ -106,11 +110,11 @@ def read_neighbours(filename, k):
     """
 
     user_knn_dict = dict()
-    with io.open(filename,'r') as fp:
+    with io.open(filename, 'r') as fp:
         for line in fp:
             contents = line.rstrip("\n").split("<SEP>")
             tmp = []
-            for i in range(0,k):
+            for i in range(0, k):
                 values = contents[i+1].split(',')
                 weight_and_neighbour = (values[0], float(values[1]))
                 tmp.append(weight_and_neighbour)
@@ -119,8 +123,9 @@ def read_neighbours(filename, k):
     return user_knn_dict
 
 
-def collaborative_filtering_user_based(user_knn_dict, user_log_MSD,
-                                user_rate_dict, user_mean_votes_dict):
+def collaborative_filtering_user_based(
+        user_knn_dict, user_log_MSD,
+        user_rate_dict, user_mean_votes_dict, num):
     """Basic memory based collaboative filtering methods
 
     :param user_knn_dict: each user's k most similar neighbours
@@ -149,9 +154,10 @@ def collaborative_filtering_user_based(user_knn_dict, user_log_MSD,
             value = 0
             weight = 0
             for other_user in user_knn_dict[user]:
-                value += (user_rate_dict[other_user[0]].get(track,
-                            user_mean_votes_dict[other_user[0]])
-                            - user_mean_votes_dict[other_user[0]]
+                value += (
+                    user_rate_dict[other_user[0]].get(
+                        track, user_mean_votes_dict[other_user[0]]) -
+                    user_mean_votes_dict[other_user[0]]
                             ) * float(other_user[1])
                 weight += float(other_user[1])
             value = value / weight
@@ -160,8 +166,8 @@ def collaborative_filtering_user_based(user_knn_dict, user_log_MSD,
         final_num = min(num, len(final_tmp))
         predict_dict[user] = sorted(final_tmp, reverse=True)[0:final_num]
 
-
     return predict_dict
+
 
 def collaborative_filtering_knn_single_user(user, user_knn_dict,
                                             user_log_MSD, user_rate_dict,
@@ -192,17 +198,17 @@ def collaborative_filtering_knn_single_user(user, user_knn_dict,
         value = 0
         weight = 0
         for other_user in user_knn_dict[user]:
-            value += (user_rate_dict[other_user[0]].get(track,
-                        user_mean_votes_dict[other_user[0]])
-                        - user_mean_votes_dict[other_user[0]]
+            value += (user_rate_dict[other_user[0]].get(
+                track, user_mean_votes_dict[other_user[0]]) -
+                        user_mean_votes_dict[other_user[0]]
                         ) * float(other_user[1])
             weight += float(other_user[1])
         value = value / weight
         if value >= 4-user_mean_tmp:
-            final_tmp.append((track,value))
+            final_tmp.append((track, value))
 
     final_num = min(num, len(final_tmp))
-    user_predict_list = sorted(final_tmp,
-                        key=operator.itemgetter(1), reverse=True)[0:final_num]
+    user_predict_list = sorted(
+        final_tmp, key=operator.itemgetter(1), reverse=True)[0:final_num]
 
     return user_predict_list
