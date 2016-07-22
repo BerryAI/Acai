@@ -27,10 +27,10 @@ and find the proper install packages
 ### Prerequisites Dataset
 In this project, we use some public open database, and they are
 
-⋅⋅* Last.fm 1k user data [download](http://mtg.upf.edu/static/datasets/last.fm/lastfm-dataset-1K.tar.gz)
-⋅⋅* Million Song Database [download](http://labrosa.ee.columbia.edu/millionsong/sites/default/files/AdditionalFiles/unique_tracks.txt)
-⋅⋅* Million Song Database subset [download](https://drive.google.com/file/d/0B7s9m90eW6dtMnk5Q2M1aFBfeDA/view?usp=sharing)
-⋅⋅* Echo Nest user data [download](http://labrosa.ee.columbia.edu/millionsong/sites/default/files/challenge/train_triplets.txt.zip)
+* Last.fm 1k user data [download](http://mtg.upf.edu/static/datasets/last.fm/lastfm-dataset-1K.tar.gz)
+* Million Song Database[download](http://labrosa.ee.columbia.edu/millionsong/sites/default/files/AdditionalFiles/unique_tracks.txt)
+* Million Song Database subset [download](https://drive.google.com/file/d/0B7s9m90eW6dtMnk5Q2M1aFBfeDA/view?usp=sharing)
+* Echo Nest user data [download](http://labrosa.ee.columbia.edu/millionsong/sites/default/files/challenge/train_triplets.txt.zip)
 
 For convenience purpose, I have calculate the intersection between 1k user data
 and MSD Database. [HERE](https://drive.google.com/open?id=0B7s9m90eW6dtX084eTNXQ2NLblU)
@@ -83,9 +83,9 @@ R is a m*n matrix
 ![](https://wikimedia.org/api/rest_v1/media/math/render/svg/3315de0d8549ccefd4c619e4e6cce6ba041dde3c)
 
 Where:
-⋅⋅* M is m*m unitary matrix
-⋅⋅* Σ is m*n diagonal matrix with singular values
-⋅⋅* N is n*n unitary matrix
+* M is m*m unitary matrix
+* Σ is m*n diagonal matrix with singular values
+* N is n*n unitary matrix
 
 With first k singular values, we could approximate R as: <br />
 ![](http://mathurl.com/znt89p3.png)
@@ -95,13 +95,13 @@ Then: <br />
 
 2. Gradient Descent
 We try to minimize the norm of residue matrix: <br />
-![](http://mathurl.com/h6zowe4.png)
+![](http://latex.codecogs.com/gif.latex?%5Cmin_%7BP%2CQ%7D%20F%28P%2CQ%29%20%3D%20%5C%7CR%20-%20PQ%5ET%5C%7C_2)
 
 we have two different approaches:
-⋅⋅* Classic Gradient Descent: <br />
+* Classic Gradient Descent: <br />
 ![](https://wikimedia.org/api/rest_v1/media/math/render/svg/0154a26cc6ac60465f8eb3d00d2f2dfa6899da2a)
 
-⋅⋅* Stochastic Gradient Descent with momentum: <br />
+* Stochastic Gradient Descent with momentum: <br />
 ![](https://wikimedia.org/api/rest_v1/media/math/render/svg/350886f1e3aaa6e9352caca8581274df95ac54e6)
 
 Both methods will converge, but please be careful choosing coefficients.
