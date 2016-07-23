@@ -114,4 +114,4 @@ Both methods will converge, but please be careful choosing coefficients.
 5. Submit a pull request :D
 
 ## License
-TODO: Write license
+The OpenMRS source code and binaries are released under the [MIT license](LICENSE.md)
