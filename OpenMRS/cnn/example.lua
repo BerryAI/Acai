@@ -24,8 +24,8 @@ para = {datadir = 'data/'
 		savedir = 'log/',
 		optimization = 'SGD', -- stochastic gradient descent
 		loss = 'mse', -- mean square error
-		trainNum = 400, -- number os training samples
-		testNum = 150, -- number os testing samples
+		trainNum = 20, -- number os training samples
+		testNum = 5, -- number os testing samples
 		maxIter = 50, -- max training iteration
 		learningRate = 0.05 ,
 		weightDecay = 0,

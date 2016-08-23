@@ -1,4 +1,4 @@
-# Music Recommendation by BerryAI
+﻿# Music Recommendation by BerryAI
 This project is a music recommendation system developed by BerryAI.
 ## Getting Started
 These instructions will get you a copy of the project up and running on your
@@ -8,13 +8,25 @@ on how to deploy the project on a live system.
 What things you need to install the software and how to install them
 ```
 Python
+Python-Librosa
+Python-Lutorpy
 Python-NumPy
+Python-Scipy
+Torch
+Torch-cunn
+Torch-dp
+Torch-nn
+Torch-optim
+Torch-xlua
 ```
 #### Linux
 All major distributions of Linux provide packages for both Python and NumPy.
 #### Mac OS X
 ```
+pip install librosa
+pip install lutorpy
 pip install numpy
+pip install scipy
 ```
 #### Windows
 Personally, I will recommend Anaconda as default Python compiler. To install
@@ -23,6 +35,12 @@ them, go to page
 https://www.continuum.io/downloads
 ```
 and find the proper install packages
+
+#### Torch
+You can find torch installation instruction in the official site: 
+http://torch.ch/
+You can also refer to our wiki page:
+https://github.com/BerryAI/music_cortex/wiki/Torch-Setup
 
 ### Prerequisites Dataset
 In this project, we use some public open database, and they are
@@ -43,9 +61,13 @@ is the download link.
 Test functions are under ./test folder. After downloading all the data files,
 please put the extracted files into ./data folder.
 
-Then run
+Then run collaborative filtering
 ```
 python test_cf_hf_gd.py
+```
+run convolutional neural networks
+```
+th example.lua
 ```
 in command line under the directory of the project installed.
 
@@ -105,6 +127,39 @@ we have two different approaches:
 ![](https://wikimedia.org/api/rest_v1/media/math/render/svg/350886f1e3aaa6e9352caca8581274df95ac54e6)
 
 Both methods will converge, but please be careful choosing coefficients.
+
+### Convolutional Neural Networks
+
+#### * Building Blocks
+
+1.Convolutional Layer
+Convolutional layers are the core building block of CNNs. The layer's parameters consist of sets of learnable filters/kernels ![](http://mathurl.com/hvjwhf8). During training, the parameters are learned from data in order to solve the target problem. The forward equation is: <br />
+![](http://mathurl.com/jrpb8hx)
+where ![](http://mathurl.com/zuaxm9z) is the data in layer L in filter i, and * represents convolution operation.
+
+2.Max Pooling Layer
+Pooling layer is another important concept of CNN. It is down-sampling process. Max pooling is a non-linear down-sampling method. The forward equation is: <br />
+![](http://mathurl.com/hz25w8p)
+where p,q are the pooling size.
+
+3.Rectified Linear Units Layer
+ReLU layers apply nonlinear activation function to neurons. Comparing to other common activation functions, ReLU is fast in training and suffers less on gradient extenuation during training.The forward equation is: <br />
+![](http://mathurl.com/guq6vge)
+
+4.Loss Layer
+The loss layer is the last layer in CNN which defines the training deviation between real predicted results and target results.
+We provide 2 options in our model.
+* Mean Squared Error
+![](http://mathurl.com/jcmhy4w)
+where ![](http://mathurl.com/znt7jgr) is real output and is target output.
+
+* Softmax Loss
+![](http://mathurl.com/hul2kyg)
+where ![](http://mathurl.com/znt7jgr) is real output and is target output.
+
+#### * Back-propagation Rule
+* Stochastic Gradient Descent with momentum: <br />
+![](https://wikimedia.org/api/rest_v1/media/math/render/svg/350886f1e3aaa6e9352caca8581274df95ac54e6)
 
 ## Contributing
 1. Fork it!
