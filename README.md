@@ -1,6 +1,7 @@
 ﻿# Open Music Recommendation System (Open MRS) by BerryAI
 Acai is an open source project initialised by Berry Labs, a startup working towards machine learning algorithms to solve daily issues. Acai (codename) is trying to solve the problem of <a href="http://www.scientificamerican.com/article/the-tyranny-of-choice-2004-04/">The Tyranny of Choice</a> (a.k.a Paradox of Choice) to describe the misery of users facing over-abundant choices. In the music area, especially in the age of streaming music, this paradox becomes so significant that it affects every single piece of choice when users try to enjoy music. It's why this project was born.
 http://www.acai.berry.ai/
+
 ## Getting Started
 These instructions will get you a copy of the project up and running on your
 local machine for development and testing purposes. See deployment for notes
@@ -134,29 +135,29 @@ Both methods will converge, but please be careful choosing coefficients.
 #### * Building Blocks
 
 1.Convolutional Layer
-Convolutional layers are the core building block of CNNs. The layer's parameters consist of sets of learnable filters/kernels ![](http://mathurl.com/hvjwhf8). During training, the parameters are learned from data in order to solve the target problem. The forward equation is: <br />
-![](http://mathurl.com/jrpb8hx)
-where ![](http://mathurl.com/zuaxm9z) is the data in layer L in filter i, and * represents convolution operation.
+Convolutional layers are the core building block of CNNs. The layer's parameters consist of sets of learnable filters/kernels ![](http://mathurl.com/hvjwhf8.png). During training, the parameters are learned from data in order to solve the target problem. The forward equation is: <br />
+![](http://mathurl.com/jrpb8hx.png)
+where ![](http://mathurl.com/zuaxm9z.png) is the data in layer L in filter i, and * represents convolution operation.
 
 2.Max Pooling Layer
 Pooling layer is another important concept of CNN. It is down-sampling process. Max pooling is a non-linear down-sampling method. The forward equation is: <br />
-![](http://mathurl.com/hz25w8p)
+![](http://mathurl.com/hz25w8p.png)
 where p,q are the pooling size.
 
 3.Rectified Linear Units Layer
 ReLU layers apply nonlinear activation function to neurons. Comparing to other common activation functions, ReLU is fast in training and suffers less on gradient extenuation during training.The forward equation is: <br />
-![](http://mathurl.com/guq6vge)
+![](http://mathurl.com/guq6vge.png)
 
 4.Loss Layer
 The loss layer is the last layer in CNN which defines the training deviation between real predicted results and target results.
 We provide 2 options in our model.
 * Mean Squared Error
-![](http://mathurl.com/jcmhy4w)
-where ![](http://mathurl.com/znt7jgr) is real output and is target output.
+![](http://mathurl.com/jcmhy4w.png)
+where ![](http://mathurl.com/znt7jgr.png) is real output and is target output.
 
 * Softmax Loss
-![](http://mathurl.com/hul2kyg)
-where ![](http://mathurl.com/znt7jgr) is real output and is target output.
+![](http://mathurl.com/hul2kyg.png)
+where ![](http://mathurl.com/znt7jgr.png) is real output and is target output.
 
 #### * Back-propagation Rule
 * Stochastic Gradient Descent with momentum: <br />
