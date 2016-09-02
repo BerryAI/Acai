@@ -15,15 +15,15 @@
 
 import numpy
 import sys
-sys.path.append('../cf')
-sys.path.append('../read_public_data')
-import cf_hidden_feature as ch
+sys.path.append('./cf')
+sys.path.append('./read_public_data')
 import msd
+import cf_hidden_feature as ch
 
 # filename of all track information of subset of Million Song Dataset(MSD)
-filename_subset = "../data/subset_unique_tracks.txt"
+filename_subset = "../../data/subset_unique_tracks.txt"
 # filename of 1k user play history intersect MSD
-user_log_intersection_filename = "../data/full_log.txt"
+user_log_intersection_filename = "../../data/full_log.txt"
 # number of hidden features
 k = 5
 

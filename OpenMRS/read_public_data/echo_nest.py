@@ -44,10 +44,10 @@ def get_user_rating_from_history_echo_nest(echo_nest_user_history):
     :rtype: dictionary
     """
 
-    user_rating_dict = dict()
+    user_rate_dict = dict()
 
     for user in echo_nest_user_history:
-        user_rating_dict[user] = dict()
+        user_rate_dict[user] = dict()
         for value in echo_nest_user_history[user]:
             score = 3
             play_times = int(value[1])
@@ -56,13 +56,13 @@ def get_user_rating_from_history_echo_nest(echo_nest_user_history):
             if play_times < 5 and play_times > 1:
                 score = 4
             index = value[0]
-            if index not in user_rating_dict[user]:
-                user_rating_dict[user][index] = score
+            if index not in user_rate_dict[user]:
+                user_rate_dict[user][index] = score
             else:
-                if user_rating_dict[user][index] < 5:
-                    user_rating_dict[user][index] += 1
+                if user_rate_dict[user][index] < 5:
+                    user_rate_dict[user][index] += 1
 
-    return user_rating_dict
+    return user_rate_dict
 
 
 def get_top_user_rating_from_history_echo_nest(echo_nest_user_history, num):
