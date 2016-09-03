@@ -3,7 +3,7 @@ import numpy as np
 import scipy.io as sio
 from extract_acoustic_feature import *
 
-def extract_hidden_features(inFile,outFile,inModel)
+def extract_hidden_features(inFile,outFile,inModel):
     """ Load the music file
         Extract CF hidden features from the song given
         :return realOutput: a vector contains hidden features

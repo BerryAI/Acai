@@ -13,11 +13,11 @@
     :auther: Alexander Z Wang
 """
 import numpy
-import sys
-sys.path.append('../cf')
-sys.path.append('../read_public_data')
-import msd
 import matplotlib.pyplot as plt
+import sys
+sys.path.append('./cf')
+sys.path.append('./read_public_data')
+import msd
 import echo_nest as en
 import cf_hidden_feature as ch
 
@@ -27,8 +27,8 @@ lambda_rate = 0.00
 max_iter = 5000
 GD_method = 1
 
-filename_tracks = "subset_unique_tracks.txt"
-filename_echo_nest = "train_triplets.txt"
+filename_tracks = "../../data/subset_unique_tracks.txt"
+filename_echo_nest = "../../data/train_triplets.txt"
 num = 1000
 
 print "Reading MSD and Echo Nest Data..."
