@@ -12,8 +12,11 @@ if int(minor_version) >= 18 or int(major_version) >= 1:
     from sklearn.neural_network import MLPClassifier
     user_model_type = 'mlp'
 else:
-    from sklearn.linear_model import LogisticRegression
-    user_model_type = 'logistic regression'
+    from sklearn.linear_model import LinearRegression, LogisticRegression
+    user_model_type = 'linear regression'
+    # Logistic regression (or more generally, classification models) is
+    #   problematic when training labels for a user
+    #   lack diversity (e.g. only rated 3 songs, all are 'like').
 
 
 def train_user_taste_model(track_hidden_features, user_ratings):
@@ -27,6 +30,8 @@ def train_user_taste_model(track_hidden_features, user_ratings):
 
     if user_model_type == 'logistic regression':
         user_model = LogisticRegression()
+    elif user_model_type == 'linear regression':
+        user_model = LinearRegression()
     elif user_model_type == 'MLP':
         user_model = MLPClassifier(
             hidden_layer_sizes=(5,), max_iter=3000, alpha=1e-2,
