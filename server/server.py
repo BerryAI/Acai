@@ -9,7 +9,7 @@ import json
 from os import path
 import sys
 CMD = path.dirname(path.realpath(__file__))
-sys.path.append(path.join(CMD, '../..'))
+sys.path.append(path.join(CMD, '..'))
 import OpenMRS as om
 
 

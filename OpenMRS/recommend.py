@@ -169,7 +169,7 @@ def _sample_tracks_from_ratings(ratings, n, options):
     if random_seed is not None:
         np.random.seed(seed=random_seed)
     return np.random.choice([x[0] for x in track_ids_and_ratings],
-                            size=n, p=probs, replace=False)
+                            size=min(n, len(probs)), p=probs, replace=False)
 
 
 def recommend_by_user_model(user_model, hidden_feature, num_tracks):

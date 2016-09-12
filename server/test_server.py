@@ -76,6 +76,19 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(len(tracks), 2)
         self.assertTrue(isinstance(tracks[0], dict))
 
+        res = self.app.post(
+            '/recommend',
+            data=json.dumps(dict(
+                user_model=user_model,
+                hidden_features=hidden_features,
+                num_tracks=200
+            )),
+            content_type='application/json'
+        )
+        self.assertEqual(res.status_code, 200)
+        tracks = json.loads(res.data)
+        self.assertTrue(isinstance(tracks[0], dict))
+        
 
 if __name__ == '__main__':
     unittest.main()
