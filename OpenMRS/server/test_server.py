@@ -25,6 +25,15 @@ class ServerTest(unittest.TestCase):
         result_data = res.data
         self.assertTrue(len(result_data) > 0)
 
+    def test_train_cf_new_data(self):
+        all_ratings = {"user0": {"track1": 4}}
+        res = self.app.post('/train_cf',
+                            data=json.dumps(dict(all_ratings=all_ratings)),
+                            content_type='application/json')
+        self.assertEqual(res.status_code, 200)
+        result_data = res.data
+        self.assertTrue(len(result_data) > 0)
+
     def test_train_user_model(self):
         example_ratings = om.data.get_example_ratings()
         res = self.app.post('/train_cf',

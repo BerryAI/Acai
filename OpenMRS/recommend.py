@@ -48,7 +48,7 @@ class RecommendationEngine(object):
         # Make sure catalog includes tracks in `computed_hidden_feature`.
         for track_id in computed_hidden_feature:
             if not self.__catalog.get_track_by_id(track_id):
-                self.__catalog[track_id] = Track(id=track_id)
+                self.__catalog[track_id] = Track(track_data={"id": track_id})
 
     def train_partial(self, ratings):
         """The incremental training of models.

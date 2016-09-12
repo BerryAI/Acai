@@ -65,7 +65,7 @@ class Track(object):
 
     def to_dict(self):
         return self.__data
-        
+
     def to_json(self):
         return json.dumps(self.__data)
 
@@ -81,10 +81,16 @@ class Catalog(object):
         """
         raise NotImplementedError
 
+    def add_or_update_track(self, id, Track):
+        raise NotImplementedError
+
     def __getitem__(self, id):
         """The [] operator.
         """
         return self.get_track_by_id(id)
+
+    def __setitem__(self, id, track):
+        return self.add_or_update_track(id, track)
 
     def get_track_ids(self, offset=0, limit=10):
         """
@@ -126,6 +132,9 @@ class SimpleCatalog(Catalog):
 
     def get_track_by_id(self, id):
         return self.__tracks.get(id)
+
+    def add_or_update_track(self, id, track):
+        self.__tracks[id] = track
 
     def get_track_ids(self, offset=0, limit=10):
         if limit is None:
