@@ -1,6 +1,7 @@
 """Music catalog: track data management.
 """
 from copy import deepcopy
+import json
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -18,7 +19,7 @@ class Track(object):
     """
 
     @classmethod
-    def fields(Track):
+    def fields(cls):
         return ['id', 'name', 'artists', 'preview_url']
 
     def __init__(self, track_data={}, source=None):
@@ -26,10 +27,11 @@ class Track(object):
         :param track_data: dict. Must include an `id`. Should contain
         `title(name)`, 'artists', 'preview_url'.
         """
-        for field in Track.fields():
+        for field in ['id']:
             assert field in track_data, ('track_data needs to have an "%s"' %
                                          field)
         self.__data = deepcopy(track_data)
+        self.__source = source
 
     def __str__(self):
         return '{id}: \"{title}\", by {artist}'.format(
@@ -60,6 +62,9 @@ class Track(object):
 
     def __getitem__(self, key):
         return self.__data.get(key)
+
+    def to_json(self):
+        return json.dumps(self.__data)
 
 
 class Catalog(object):

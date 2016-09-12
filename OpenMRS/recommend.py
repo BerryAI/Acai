@@ -2,8 +2,7 @@
 """
 from copy import deepcopy
 import numpy as np
-import random
-from catalog import SimpleCatalog
+from catalog import SimpleCatalog, Track
 from cf.cf_hidden_feature import get_hidden_feature_matrix_GD
 import itertools
 from API.user import train_user_taste_model
@@ -18,10 +17,15 @@ class RecommendationEngine(object):
             import data
             catalog = SimpleCatalog(data.get_example_tracks())
         self.__catalog = catalog
+        self._hidden_feature = {}
 
     @property
     def catalog(self):
         return self.__catalog
+
+    @property
+    def hidden_feature(self):
+        return self._hidden_feature
 
     def train(self, ratings):
         k = 5
@@ -35,12 +39,16 @@ class RecommendationEngine(object):
         )
         self._user_weight = dict([(user_id, user_weight[idx])
             for user_id, idx in user_index.iteritems()])
-        self._hidden_feature = dict([(track_id, hidden_feature[idx])
+        computed_hidden_feature = dict([(track_id, hidden_feature[idx])
             for track_id, idx in song_index.iteritems()])
+        self._hidden_feature.update(computed_hidden_feature)
         self._res_norm = res_norm
         self._ratings = ratings
         self._user_models = {}
-
+        # Make sure catalog includes tracks in `computed_hidden_feature`.
+        for track_id in computed_hidden_feature:
+            if not self.__catalog.get_track_by_id(track_id):
+                self.__catalog[track_id] = Track(id=track_id)
 
     def train_partial(self, ratings):
         """The incremental training of models.
@@ -80,7 +88,6 @@ class RecommendationEngine(object):
         pred_ratings = self.predict_all_ratings(user_model)
         sampled_track_ids = _sample_tracks_from_ratings(pred_ratings, num, None)
         return [self.__catalog[i] for i in sampled_track_ids]
-
 
     def recommend_by_tracks(self, seed_track_ids, num):
         raise NotImplementedError
@@ -125,7 +132,6 @@ class RecommendationEngine(object):
         fea = self.get_track_hidden_features(track.id)
         return user_taste_model.predict(fea.reshape(1, -1))
 
-
     def predict_all_ratings(self, user_taste_model):
         """
         :return ratings: a dict mapping track_id to predicted rating.
@@ -135,6 +141,9 @@ class RecommendationEngine(object):
             for track in self.__catalog.tracks()
         )
         return ratings
+
+    def update_hidden_feature(self, input_hidden_feature):
+        self._hidden_feature.update(input_hidden_feature)
 
 
 def __rating_to_prob(rating):
@@ -160,4 +169,26 @@ def _sample_tracks_from_ratings(ratings, n, options):
     if random_seed is not None:
         np.random.seed(seed=random_seed)
     return np.random.choice([x[0] for x in track_ids_and_ratings],
-        size=n, p=probs)
+                            size=n, p=probs)
+
+
+def recommend_by_user_model(user_model, hidden_feature, num_tracks):
+    catalog = SimpleCatalog([{'id': track_id} for track_id in hidden_feature])
+    engine = RecommendationEngine(catalog=catalog)
+    engine.update_hidden_feature(hidden_feature)
+    tracks = engine.recommend_by_user_model(user_model, num=num_tracks)
+    return tracks or []
+
+
+def train_user_model(ratings_one_user, hidden_feature):
+    catalog = SimpleCatalog([{'id': track_id} for track_id in hidden_feature])
+    engine = RecommendationEngine(catalog=catalog)
+    engine.update_hidden_feature(hidden_feature)
+    user_model = engine.train_user_taste_model(ratings_one_user)
+    return user_model
+
+
+def train_cf(all_ratings):
+    engine = RecommendationEngine(catalog=None)
+    engine.train(all_ratings)
+    return engine.hidden_feature
