@@ -50,5 +50,6 @@ def predict_rating(user_model, track_hidden_features):
     :rtype: list
     """
     prediction = user_model.predict(track_hidden_features.reshape(1, -1))
+    prediction = np.clip(prediction.astype(np.int32), 1, 5)
     prediction = prediction.tolist()
     return prediction
