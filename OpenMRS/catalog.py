@@ -63,6 +63,9 @@ class Track(object):
     def __getitem__(self, key):
         return self.__data.get(key)
 
+    def to_dict(self):
+        return self.__data
+        
     def to_json(self):
         return json.dumps(self.__data)
 

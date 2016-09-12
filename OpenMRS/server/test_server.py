@@ -1,12 +1,9 @@
 import os
 import sys
-from server import app
+from server import app, om
 import tempfile
 import unittest
 import json
-CWD = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(os.path.join(CWD, '../..'))
-import OpenMRS as om
 
 
 class ServerTest(unittest.TestCase):
@@ -68,6 +65,7 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         tracks = json.loads(res.data)
         self.assertEqual(len(tracks), 2)
+        self.assertTrue(isinstance(tracks[0], dict))
 
 
 if __name__ == '__main__':

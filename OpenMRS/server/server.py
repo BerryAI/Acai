@@ -40,7 +40,7 @@ def handle_recommend():
     num_tracks = data.get('num_tracks', 2)
     tracks = om.recommend_by_user_model(user_model, hidden_features, num_tracks)
     return json.dumps(
-        [t.to_json() for t in tracks]
+        [t.to_dict() for t in tracks]
     )
 
 
@@ -79,5 +79,5 @@ def handle_train_cf():
 if __name__ == '__main__':
     # app.run(port=5001)
     http_server = HTTPServer(WSGIContainer(app))
-    http_server.listen(8080)
+    http_server.listen(80)
     IOLoop.instance().start()
