@@ -3,15 +3,13 @@
 from copy import deepcopy
 import json
 import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
 
 
-def _shorten_title(track_title):
-    if len(track_title) <= 20:
+def _shorten_title(track_title, max_length=35):
+    if len(track_title) <= max_length:
         return track_title
     else:
-        return track_title + '...'
+        return track_title[:max_length] + '...'
 
 
 class Track(object):
@@ -36,9 +34,9 @@ class Track(object):
     def __str__(self):
         return '{id}: \"{title}\", by {artist}'.format(
             id=self.id,
-            title=_shorten_title(self.title),
+            title=_shorten_title(self.title.encode('utf-8')),
             artist=(
-                self.artists[0].get('name', 'unknown') +
+                self.artists[0].get('name', 'unknown').encode('utf-8') +
                 (' et al' if len(self.artists) > 1 else '')
             )
         )

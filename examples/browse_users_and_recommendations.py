@@ -5,7 +5,7 @@ and see what tracks get recommended.
 from os import path
 import sys
 CWD = path.dirname(path.realpath(__file__))
-sys.path.append(path.join(CWD, '../..'))
+sys.path.append(path.join(CWD, '..'))
 # The above lines are not necessary when OpenMRS has already been installed.
 
 import OpenMRS as om
@@ -20,7 +20,8 @@ engine.train(ratings=example_ratings)
 
 one_user = engine.get_user_ids()[0]
 ratings = engine.get_ratings_by_user(user_id=one_user)
-print 'Ratings by user %s:' % one_user
+print ('Ratings by user %s (5 being most favorable and 1 least favorable):' %
+    one_user)
 for track_id, rating in ratings.items()[:5]:
     print '  User rates %s on track %s' % (rating,
         engine.catalog.get_track_by_id(track_id))
