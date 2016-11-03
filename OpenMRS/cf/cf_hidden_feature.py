@@ -9,6 +9,7 @@
 """
 
 import numpy
+import json
 
 
 def full_rating_matrix_with_index(user_rate_dict):
@@ -111,7 +112,7 @@ def stochastic_GD(rating_matrix, lean_rate, lambda_rate, k, max_iter):
     :param k: number of hidden features
     :param max_iter: maximum iteration steps in gradient descent method
     :return user_weight: user weight matrix
-    :return hidden_feature: hidden_feature_matrix
+    :return hidden_feature: hidden feature matrix
     :rtype: ndarray
     """
 
@@ -161,7 +162,7 @@ def stochastic_GD_with_ini(rating_matrix, user_weight, lean_rate,
     :param lambda_rate: lambda rate
     :param k: number of hidden features
     :return user_weight: user weight matrix
-    :return hidden_feature: hidden_feature_matrix
+    :return hidden_feature: hidden feature matrix
     :return full_iteration: flag of iteration status
     :return res_norm_list: list of error norm of each iteration
     :rtype: ndarray
@@ -213,7 +214,7 @@ def stochastic_GD_r(rating_matrix, lean_rate, lambda_rate, k,
     :param lambda_rate: lambda rate
     :param k: number of hidden features
     :return user_weight: user weight matrix
-    :return hidden_feature: hidden_feature_matrix
+    :return hidden_feature: hidden feature matrix
     :rtype: ndarray
     """
 
@@ -249,7 +250,7 @@ def batch_GD(rating_matrix, lean_rate, lambda_rate, k, max_iter):
     :param lambda_rate: lambda rate
     :param k: number of hidden features
     :return user_weight: user weight matrix
-    :return hidden_feature: hidden_feature_matrix
+    :return hidden_feature: hidden feature matrix
     :rtype: ndarray
     """
 
@@ -297,7 +298,7 @@ def get_hidden_feature_matrix_GD(
     :param max_iter: max iteration steps in GD
     :param method: number of the method
     :return user_weight: user weight matrix
-    :return hidden_feature: hidden_feature_matrix
+    :return hidden_feature: hidden feature matrix
     :rtype: ndarray
     """
 
@@ -313,4 +314,58 @@ def get_hidden_feature_matrix_GD(
         user_weight, hidden_feature, res_norm = batch_GD(
             rating_matrix, lean_rate, lambda_rate, k, max_iter)
 
-    return user_weight, hidden_feature, res_norm
+    return user_weight, hidden_feature, res_norm, user_index, song_index
+
+
+def write_hidden_feature_to_file(hf_filename, hidden_feature, song_index):
+    """Write hidden features to a Json file
+
+    :param hf_filename: filename for hidden feature matrix
+    :param hidden_feature: hidden feature matrix
+    :param song_index: index of song in hidden feature matrix
+    """
+
+    inv_song_index = dict((v, k) for k, v in song_index.iteritems())
+    data = dict()
+
+    for key in inv_song_index:
+        data[inv_song_index[key]] = hidden_feature[key].tolist()
+
+    with open(hf_filename, 'w') as outfile:
+        json.dump(data, outfile)
+
+
+def get_user_profile(
+        user_rate_dict, k, lean_rate, lambda_rate, max_iter, GD_method):
+    """Get user profile of hidden feature weight by gradient descent method
+
+    :param user_rate_dict: user rating matrix
+    :param k: number of hidden features
+    :param lean_rate: learner rate
+    :param lambda_rate: lambda rate
+    :param max_iter: max iteration steps in GD
+    :param method: number of the method
+    :return user_profile: user weight profile
+    :rtype: dictionary
+    """
+
+    user_profile = dict()
+
+    user_index, song_index, rating_matrix = full_rating_matrix_with_index(
+                                            user_rate_dict)
+    if GD_method == 1:
+        user_weight, hidden_feature, res_norm = stochastic_GD(
+            rating_matrix, lean_rate, lambda_rate, k, max_iter)
+    if GD_method == 2:
+        user_weight, hidden_feature, res_norm = stochastic_GD_r(
+            rating_matrix, lean_rate, lambda_rate, k, max_iter)
+    if GD_method == 3:
+        user_weight, hidden_feature, res_norm = batch_GD(
+            rating_matrix, lean_rate, lambda_rate, k, max_iter)
+
+    for user in user_index:
+        line_number = user_index[user]
+        weight_tmp = user_weight[line_number, :].tolist()
+        user_profile[user] = weight_tmp
+
+    return user_profile
